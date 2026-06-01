@@ -1,0 +1,239 @@
+<section class="facturacion-container">
+
+
+
+  <mat-tab-group>
+
+    <!-- TAB GENERAR FACTURA -->
+    <mat-tab label="Generar Factura">
+
+      <div class="contenido-tab">
+
+        <div class="formulario-factura">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cliente</mat-label>
+            <mat-select [(ngModel)]="clienteSeleccionado">
+              @for (cliente of clientes; track cliente.dui) {
+              <mat-option [value]="cliente">
+                {{ cliente.primerNombre }} {{ cliente.primerApellido }} - {{ cliente.dui }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Producto</mat-label>
+            <mat-select [(ngModel)]="productoSeleccionado">
+              @for (producto of productos; track producto.id) {
+              <mat-option [value]="producto">
+                {{ producto.nombreProducto }} - ${{ producto.precioProducto }}
+                | Stock: {{ stockPorProducto[producto.id!] || 0 }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cantidad</mat-label>
+            <input matInput type="number" min="1" [(ngModel)]="cantidad">
+          </mat-form-field>
+
+          <button mat-raised-button class="btn-agregar" (click)="agregarProducto()">
+            + Agregar producto
+          </button>
+
+        </div>
+
+        <div class="tabla-contenedor">
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad</th>
+                <th>Stock</th>
+                <th>Subtotal</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (detalle of detalles; track detalle.producto.id; let i = $index) {
+              <tr>
+                <td>{{ detalle.producto.nombreProducto }}</td>
+                <td>${{ detalle.precioUnitario | number:'1.2-2' }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>{{ detalle.stockDisponible }}</td>
+                <td>${{ detalle.subtotal | number:'1.2-2' }}</td>
+                <td>
+                  <mat-icon class="icono eliminar" (click)="eliminarDetalle(i)">
+                    delete
+                  </mat-icon>
+                </td>
+              </tr>
+              }
+
+              @if (detalles.length === 0) {
+              <tr>
+                <td colspan="6" class="sin-datos">
+                  No hay productos agregados a la factura.
+                </td>
+              </tr>
+              }
+
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="resumen">
+          <p><strong>Subtotal:</strong> ${{ subtotal | number:'1.2-2' }}</p>
+          <p><strong>IVA 13%:</strong> ${{ iva | number:'1.2-2' }}</p>
+          <h3>Total: ${{ total | number:'1.2-2' }}</h3>
+
+          <button mat-raised-button class="btn-generar" (click)="generarFactura()">
+            Generar Factura
+          </button>
+        </div>
+
+      </div>
+
+    </mat-tab>
+
+    <!-- TAB CONSULTAR FACTURAS -->
+    <mat-tab label="Consultar Facturas">
+
+      <div class="contenido-tab">
+
+        <div class="panel-consulta">
+
+          <div class="bloque-busqueda">
+            <h4>Buscar factura específica</h4>
+
+            <div class="fila-filtros">
+              <mat-form-field appearance="outline">
+                <mat-label>ID Factura</mat-label>
+                <input matInput [(ngModel)]="idFacturaConsulta" placeholder="FAC0000001">
+              </mat-form-field>
+
+              <button mat-raised-button class="btn-agregar" (click)="buscarFacturaPorId()">
+                Buscar por ID
+              </button>
+
+              <button mat-button class="btn-limpiar" (click)="limpiarBusquedaPorId()">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="bloque-busqueda">
+            <h4>Consultar historial</h4>
+
+            <div class="fila-filtros">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha inicio</mat-label>
+                <input matInput type="date" [(ngModel)]="fechaInicioConsulta">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha fin</mat-label>
+                <input matInput type="date" [(ngModel)]="fechaFinConsulta">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>DUI Cliente</mat-label>
+                <input matInput [(ngModel)]="clienteConsulta" placeholder="01234567-8">
+              </mat-form-field>
+
+              <button mat-raised-button class="btn-generar" (click)="consultarFacturas()">
+                Consultar
+              </button>
+
+              <button mat-button class="btn-limpiar" (click)="limpiarConsultaFacturas()">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="tabla-contenedor">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Subtotal</th>
+                <th>IVA</th>
+                <th>Total</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (factura of facturasConsultadas; track factura.id) {
+              <tr>
+                <td>{{ factura.id }}</td>
+                <td>{{ factura.fecha }}</td>
+                <td>{{ factura.cliente.dui }}</td>
+                <td>${{ factura.subtotal | number:'1.2-2' }}</td>
+                <td>{{ factura.iva }}</td>
+                <td>${{ factura.total | number:'1.2-2' }}</td>
+                <td>
+                  <mat-icon class="icono ver" (click)="consultarDetallesFactura(factura.id!)">
+                    visibility
+                  </mat-icon>
+                </td>
+              </tr>
+              }
+
+              @if (facturasConsultadas.length === 0) {
+              <tr>
+                <td colspan="7" class="sin-datos">
+                  No hay facturas consultadas.
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (facturaSeleccionada) {
+        <div class="detalle-factura">
+          <h3>Detalle de Factura {{ facturaSeleccionada.id }}</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Costo</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (detalle of detallesFacturaSeleccionada; track detalle.id) {
+              <tr>
+                <td>{{ detalle.producto.nombreProducto }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>${{ detalle.precioUnitario | number:'1.2-2' }}</td>
+                <td>${{ detalle.costo | number:'1.2-2' }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+
+      </div>
+
+    </mat-tab>
+
+  </mat-tab-group>
+
+</section>

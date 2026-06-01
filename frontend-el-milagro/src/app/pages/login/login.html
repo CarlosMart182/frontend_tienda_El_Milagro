@@ -1,0 +1,56 @@
+<div class="login-container">
+  <div class="login-card">
+
+    <img src="assets/img/logo-milagro.png" alt="Logo" class="logo">
+
+    <h1>Sistema de Facturación</h1>
+    <p>Tienda El Milagro</p>
+
+    <form [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuario</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="nombreUsuario">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+
+        <input
+          matInput
+          [type]="ocultarContrasena ? 'password' : 'text'"
+          formControlName="contrasena">
+
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultarContrasena = !ocultarContrasena">
+
+          <mat-icon>
+            {{ ocultarContrasena ? 'visibility' : 'visibility_off' }}
+          </mat-icon>
+
+        </button>
+
+      </mat-form-field>
+
+      @if (errorLogin) {
+        <p class="error-login">{{ errorLogin }}</p>
+      }
+
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="full-width">
+        Iniciar Sesión
+      </button>
+
+    </form>
+
+  </div>
+</div>

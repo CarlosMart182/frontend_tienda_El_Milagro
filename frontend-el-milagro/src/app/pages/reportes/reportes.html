@@ -1,0 +1,51 @@
+<section class="reportes-container">
+
+  <div class="header">
+    <h2>Reportes Mensuales</h2>
+    <p>Genere y descargue el reporte mensual de facturación.</p>
+  </div>
+
+  <div class="filtros">
+    <mat-form-field appearance="outline">
+      <mat-label>Mes</mat-label>
+      <input matInput type="number" min="1" max="12" [(ngModel)]="mes">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Año</mat-label>
+      <input matInput type="number" min="2000" [(ngModel)]="anio">
+    </mat-form-field>
+
+    <button mat-raised-button class="btn-principal" (click)="generarReporte()">
+      Generar Reporte
+    </button>
+
+    <button mat-raised-button class="btn-pdf" (click)="descargarPdf()">
+      Descargar PDF
+    </button>
+
+    <button mat-raised-button class="btn-excel" (click)="descargarExcel()">
+      Descargar Excel
+    </button>
+  </div>
+
+  @if (reporte) {
+    <div class="resumen">
+      <div class="card">
+        <h3>Periodo</h3>
+        <p>{{ reporte.mes }}/{{ reporte.anio }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Facturas emitidas</h3>
+        <p>{{ reporte.cantidadFacturas }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Total mensual</h3>
+        <p>${{ reporte.totalMensual | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  }
+
+</section>

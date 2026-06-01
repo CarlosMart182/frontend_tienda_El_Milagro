@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>
+  {{ modo === 'crear' ? 'Agregar Usuario' :
+     modo === 'editar' ? 'Editar Usuario' :
+     'Detalle del Usuario' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="formulario" class="formulario">
+
+    @if (modo !== 'crear') {
+      <mat-form-field appearance="outline">
+        <mat-label>ID</mat-label>
+        <input matInput formControlName="id" readonly>
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Usuario</mat-label>
+      <input matInput formControlName="nombreUsuario" [readonly]="modo === 'ver'">
+    </mat-form-field>
+
+    @if (modo !== 'ver') {
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ modo === 'crear' ? 'Contraseña' : 'Nueva contraseña opcional' }}
+        </mat-label>
+        <input matInput type="password" formControlName="clave">
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Roles</mat-label>
+      <mat-select formControlName="rolesIds" multiple>
+        @for (rol of roles; track rol.id) {
+          <mat-option [value]="rol.id">
+            {{ rol.nombre }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cancelar</button>
+
+  @if (modo !== 'ver') {
+    <button mat-raised-button color="primary" (click)="guardar()">
+      Guardar
+    </button>
+  }
+</mat-dialog-actions>
