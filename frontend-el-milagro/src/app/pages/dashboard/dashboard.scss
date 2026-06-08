@@ -47,12 +47,14 @@
   flex: 1;
   min-height: 100vh;
 
-  background:
-    linear-gradient(
-      rgba(255, 255, 255, 0.92),
-      rgba(255, 255, 255, 0.92)
-    ),
-    url('/assets/img/logo-milagro.png');
+  // background:
+  //   linear-gradient(
+  //     rgba(255, 255, 255, 0.92),
+  //     rgba(255, 255, 255, 0.92)
+  //   ),
+  //   url('/assets/img/logo-milagro.png');
+
+  background-color:#f4f6f9;
 
   background-size: cover;
   background-position: center;
