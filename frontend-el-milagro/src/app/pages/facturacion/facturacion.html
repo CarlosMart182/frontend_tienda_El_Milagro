@@ -8,6 +8,7 @@
     <mat-tab label="Generar Factura">
 
       <div class="contenido-tab">
+        @if (!facturaGeneradaReciente) {
 
         <div class="formulario-factura">
 
@@ -99,6 +100,58 @@
           </button>
         </div>
 
+        } @else {
+        <section class="resumen-factura-generada">
+          <div class="resumen-factura-encabezado">
+            <div>
+              <h3>Factura generada correctamente</h3>
+              <p>Ya puedes imprimirla o generar una nueva factura.</p>
+            </div>
+
+            <div class="acciones-resumen-factura">
+              <button
+                mat-raised-button
+                class="btn-generar"
+                [disabled]="!facturaGeneradaReciente.id"
+                (click)="imprimirFacturaPdf(facturaGeneradaReciente.id!)">
+                Imprimir Factura
+              </button>
+
+              <button mat-stroked-button class="btn-nueva-factura" (click)="nuevaFactura()">
+                Nueva Factura
+              </button>
+            </div>
+          </div>
+
+          <div class="tabla-contenedor">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Subtotal</th>
+                  <th>IVA</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>{{ facturaGeneradaReciente.id || 'Sin ID' }}</td>
+                  <td>{{ facturaGeneradaReciente.fecha || facturaGeneradaReciente.fechaRegistro || 'Sin fecha' }}</td>
+                  <td>{{ facturaGeneradaReciente.cliente.dui || 'Sin cliente' }}</td>
+                  <td>${{ (facturaGeneradaReciente.subtotal ?? 0) | number:'1.2-2' }}</td>
+                  <td>${{ (facturaGeneradaReciente.iva ?? 0) | number:'1.2-2' }}</td>
+                  <td>${{ (facturaGeneradaReciente.total ?? 0) | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+        }
+
       </div>
 
     </mat-tab>
@@ -171,6 +224,7 @@
                 <th>IVA</th>
                 <th>Total</th>
                 <th>Detalle</th>
+                <th>Imprimir</th>
               </tr>
             </thead>
 
@@ -188,12 +242,17 @@
                     visibility
                   </mat-icon>
                 </td>
+                <td>
+                  <mat-icon class="icono imprimir" (click)="imprimirFacturaPdf(factura.id!)">
+                    print
+                  </mat-icon>
+                </td>
               </tr>
               }
 
               @if (facturasConsultadas.length === 0) {
               <tr>
-                <td colspan="7" class="sin-datos">
+                <td colspan="8" class="sin-datos">
                   No hay facturas consultadas.
                 </td>
               </tr>

@@ -61,6 +61,9 @@ export class Facturacion implements OnInit {
   facturasConsultadas: Factura[] = [];
   facturaSeleccionada: Factura | null = null;
   detallesFacturaSeleccionada: DetalleFactura[] = [];
+  facturaGeneradaReciente: Factura | null = null;
+  detallesFacturaGenerada: DetalleFactura[] = [];
+  respuestaFacturaSinDetalles = false;
 
   stockPorProducto: { [productoId: number]: number } = {};
   detalles: DetalleTemporal[] = [];
@@ -206,6 +209,13 @@ export class Facturacion implements OnInit {
 
     this.facturaService.generarFactura(factura).subscribe({
       next: respuesta => {
+        const detallesRespuesta = Array.isArray(respuesta.detalles)
+          ? respuesta.detalles
+          : [];
+
+        this.facturaGeneradaReciente = respuesta;
+        this.detallesFacturaGenerada = detallesRespuesta;
+        this.respuestaFacturaSinDetalles = detallesRespuesta.length === 0;
         this.mostrarMensaje(`Factura ${respuesta.id} generada con éxito`);
         this.limpiarFormulario();
         this.cargarProductos();
@@ -224,6 +234,13 @@ export class Facturacion implements OnInit {
     this.detalles = [];
   }
 
+  nuevaFactura(): void {
+    this.facturaGeneradaReciente = null;
+    this.detallesFacturaGenerada = [];
+    this.respuestaFacturaSinDetalles = false;
+    this.limpiarFormulario();
+  }
+
   consultarFacturas(): void {
     this.facturaSeleccionada = null;
     this.detallesFacturaSeleccionada = [];
@@ -239,6 +256,19 @@ export class Facturacion implements OnInit {
       error: error => {
         console.error('Error al consultar facturas', error);
         this.mostrarMensaje('Error al consultar facturas');
+      }
+    });
+  }
+
+  imprimirFacturaPdf(idFactura: string): void {
+    this.facturaService.imprimirFactura(idFactura).subscribe({
+      next: (blob: any) => {
+        const url = window.URL.createObjectURL(blob);
+        const enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = `factura_${idFactura}_${new Date().toISOString().split('T')[0]}.pdf`;
+        enlace.click();
+        window.URL.revokeObjectURL(url);
       }
     });
   }

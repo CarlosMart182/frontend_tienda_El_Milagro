@@ -76,6 +76,45 @@ td {
   align-items: flex-end;
 }
 
+.resumen-factura-generada {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.resumen-factura-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+
+  h3 {
+    margin: 0 0 8px;
+    color: #0f5132;
+  }
+
+  p {
+    margin: 0;
+    color: #555;
+  }
+}
+
+.acciones-resumen-factura {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-nueva-factura {
+  border-color: #0f5132 !important;
+  color: #0f5132 !important;
+  font-weight: bold;
+}
+
+.tabla-detalles-generada {
+  margin-top: -8px;
+}
+
 .contenido-tab {
   padding-top: 24px;
 }
@@ -158,4 +197,18 @@ td {
 .btn-limpiar {
   color: #0f5132 !important;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .formulario-factura {
+    grid-template-columns: 1fr;
+  }
+
+  .resumen-factura-encabezado {
+    flex-direction: column;
+  }
+
+  .acciones-resumen-factura {
+    width: 100%;
+  }
 }

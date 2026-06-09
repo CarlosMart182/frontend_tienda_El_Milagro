@@ -16,6 +16,12 @@ export class FacturaService {
         return this.http.post<Factura>(`${this.apiUrl}/generar`, factura);
     }
 
+    imprimirFactura(idFactura: string): any {
+        return this.http.get(`${this.apiUrl}/${idFactura}/pdf`, {
+            responseType: 'blob'
+        });
+    }
+
     consultarFacturas(fechaInicio?: string, fechaFin?: string, cliente?: string): Observable<Factura[]> {
         let params = new HttpParams();
 
